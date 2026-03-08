@@ -244,8 +244,8 @@ export class MySlider extends LitElement {
 					<ha-card>
 						<div class="slider-container" style="${styleStr}">
 							<input name="foo" type="range" class="${entity.state}" style="${styleStr}"
-								min="${entity.attributes.min_mireds}" max="${entity.attributes.max_mireds}"
-								step="${step}" .value="${entity.state === "off" ? 0 : entity.attributes.color_temp}"
+								min="${entity.attributes.min_color_temp_kelvin || Math.round(1000000 / entity.attributes.max_mireds)}" max="${entity.attributes.max_color_temp_kelvin || Math.round(1000000 / entity.attributes.min_mireds)}"
+								step="${step}" .value="${entity.state === "off" ? 0 : (entity.attributes.color_temp_kelvin || Math.round(1000000 / entity.attributes.color_temp))}"
 								@input=${handleInput} @change=${handleChange}
 								@touchstart=${conf.toggle_scroll ? toggleScroll : null}
 								@touchend=${conf.toggle_scroll ? toggleScroll : null} >
@@ -395,7 +395,7 @@ export class MySlider extends LitElement {
 
 		this.hass.callService("homeassistant", "turn_on", {
 			entity_id: _entity.entity_id,
-			color_temp: value
+			color_temp_kelvin: value
 		});
 
 		_target.value = value;

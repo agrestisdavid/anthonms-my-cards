@@ -409,10 +409,29 @@ export class MySliderV2 extends LitElement {
                 }
                 else if (defaultConfig.mode === 'temperature') {
                     if (this.entity.state !== 'on') break
-                    defaultConfig.min = this._config!.min ? this._config!.min : this.entity.attributes.min_mireds
-                    defaultConfig.max = this._config!.max ? this._config!.max : this.entity.attributes.max_mireds
-                    tmpVal = parseFloat(this.entity.attributes.color_temp)
-                    this.oldVal = parseFloat(this.entity.attributes.color_temp)
+
+                    const minColorTempKelvin = this.entity.attributes.min_color_temp_kelvin
+                        ? parseFloat(this.entity.attributes.min_color_temp_kelvin)
+                        : this.entity.attributes.max_mireds
+                            ? Math.round(1000000 / parseFloat(this.entity.attributes.max_mireds))
+                            : 2000
+                    const maxColorTempKelvin = this.entity.attributes.max_color_temp_kelvin
+                        ? parseFloat(this.entity.attributes.max_color_temp_kelvin)
+                        : this.entity.attributes.min_mireds
+                            ? Math.round(1000000 / parseFloat(this.entity.attributes.min_mireds))
+                            : 6500
+
+                    defaultConfig.min = this._config!.min ? this._config!.min : minColorTempKelvin
+                    defaultConfig.max = this._config!.max ? this._config!.max : maxColorTempKelvin
+
+                    const colorTempKelvin = this.entity.attributes.color_temp_kelvin
+                        ? parseFloat(this.entity.attributes.color_temp_kelvin)
+                        : this.entity.attributes.color_temp
+                            ? Math.round(1000000 / parseFloat(this.entity.attributes.color_temp))
+                            : defaultConfig.min
+
+                    tmpVal = colorTempKelvin
+                    this.oldVal = colorTempKelvin
                     if (!defaultConfig.showMin) { // Subtracting savedMin to make slider 0 be far left
                         defaultConfig.max = defaultConfig.max - defaultConfig.min
                         tmpVal = tmpVal - defaultConfig.min
@@ -751,7 +770,7 @@ export class MySliderV2 extends LitElement {
     private _setColorTemp(entity, value): void {
         this.hass.callService("light", "turn_on", {
             entity_id: entity.entity_id,
-            color_temp: value
+            color_temp_kelvin: value
         })
         this.oldVal = value
 
