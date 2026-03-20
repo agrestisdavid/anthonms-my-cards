@@ -65,9 +65,6 @@ export class MySliderV2 extends LitElement {
             this.sliderVal = val;
             this.sliderValPercent = valPercent;
         }
-        if (this._config.reverse) {
-            this.sliderValPercent = 100 - this.sliderValPercent;
-        }
     }
 
     public static getStubConfig(): object {
@@ -379,7 +376,6 @@ export class MySliderV2 extends LitElement {
             vertical: this._config!.vertical !== undefined ? this._config!.vertical : false,
             flipped: this._config!.flipped !== undefined ? this._config!.flipped : false,
             inverse: this._config!.inverse !== undefined ? this._config!.inverse : false,
-            reverse: this._config!.reverse !== undefined ? this._config!.reverse : false,
             intermediate: this._config!.intermediate !== undefined ? this._config!.intermediate : false,
             min: this._config!.min ? this._config!.min : 0,
             max: this._config!.max ? this._config!.max : 100,
@@ -679,13 +675,11 @@ export class MySliderV2 extends LitElement {
         let valuePercentage = roundPercentage(percentage(val, this._config.max))
         valuePercentage = valuePercentage < this._config.sliderMin ? this._config.sliderMin : valuePercentage
 
-        const displayPercentage = this._config.reverse ? (100 - valuePercentage) : valuePercentage
-
         if (this._config.vertical) {
-            progressEl.style.height = displayPercentage.toString() + '%'
+            progressEl.style.height = valuePercentage.toString() + '%'
         }
         else {
-            progressEl.style.width = displayPercentage.toString() + '%'
+            progressEl.style.width = valuePercentage.toString() + '%'
         }
 
         // Check if value has changed

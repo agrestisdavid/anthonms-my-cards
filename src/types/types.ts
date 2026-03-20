@@ -29,7 +29,6 @@ export interface MySliderConfig extends MyCardConfig {
   vertical?: boolean;
   flipped?: boolean;
   inverse?: boolean;
-  reverse?: boolean;
   intermediate?: boolean;
   disableScroll?: boolean;
   allowTapping?: boolean;
